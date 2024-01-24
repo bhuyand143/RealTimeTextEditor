@@ -3,9 +3,10 @@ import Quill from 'quill'
 import "quill/dist/quill.snow.css"
 import { io } from 'socket.io-client'
 import { useParams } from 'react-router'
+import Users from './Users'
 
 
-const TextEditor = () => {
+const TextEditor = (props) => {
 
   var toolbarOptions = [
     ['bold', 'italic', 'underline', 'strike'],
@@ -23,6 +24,8 @@ const TextEditor = () => {
   const [socket, setSocket] = useState()
   const [quill, setQuill] = useState()
   const {id:documentId}=useParams()
+  const userid=localStorage.getItem('userid')
+  const {handleClient}=props;
 
   useEffect(() => {
     const s = io("http://localhost:3001")
@@ -31,6 +34,13 @@ const TextEditor = () => {
       s.disconnect()
     }
   }, [])
+  
+  useEffect(()=>{
+    if(socket==null || quill==null) return;
+    socket.on('updateUser',(client)=>{
+      handleClient(client);
+    })
+  },[socket])
 
   useEffect(()=>{
     if(socket==null || quill==null) return;
@@ -39,7 +49,7 @@ const TextEditor = () => {
       quill.enable()
       quill.setContents(document)
     })
-    socket.emit('get-document',documentId)
+    socket.emit('get-document',documentId,userid)
   },[socket,quill,documentId])
 
   useEffect(() => {
