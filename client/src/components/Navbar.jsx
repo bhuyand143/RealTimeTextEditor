@@ -2,12 +2,14 @@ import React from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 
-const Navbar = () => {
+const Navbar = (props) => {
     let location = useLocation();
     let navigate = useNavigate();
-
+    const {setlogstatus,isLoggedin}=props;
     const handleLogout = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('userid');
+        setlogstatus(false);
         navigate('/login');
     }
     return (
@@ -23,23 +25,9 @@ const Navbar = () => {
                             <li className="nav-item">
                                 <Link className={`nav-link ${location.pathname === "/home" || location.pathname === "/login" ? 'active' : ''}`} aria-current="page" to='/home'>Home</Link>
                             </li>
-                            {/* {location.pathname === `/documents/:id` && 
-                             <>
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Connected users
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="#">Action</a></li>
-                                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                                        <li><hr class="dropdown-divider" /></li>
-                                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                                    </ul>
-                                </li>
-                            </>} */}
                         </ul>
 
-                        {!localStorage.getItem('token')
+                        {!isLoggedin
                             ?
                             <form className="d-flex" role="search">
                                 <Link to="/login" className='btn btn-primary mx-1' role="button">Login <i className="fa-solid fa-user"></i></Link>
@@ -47,7 +35,7 @@ const Navbar = () => {
                             </form>
                             :
                             <form className="d-flex">
-                                <button onClick={handleLogout} className="btn btn-primary">Logout <i class="fa fa-sign-out"></i></button>
+                                <button onClick={handleLogout} className="btn btn-primary">Logout <i className="fa fa-sign-out"></i></button>
                             </form>}
                     </div>
                 </div>

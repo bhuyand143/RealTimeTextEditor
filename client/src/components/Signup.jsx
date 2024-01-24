@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 
-const Signup = () => {
+const Signup = (props) => {
     const [credentials, setCredentials] = useState({ email: "", password: "", name: "" });
     let navigate = useNavigate();
     const host = import.meta.env.VITE_APP_SERVER;
+    const {setlogstatus}=props;
     const handleSubmit = async (e) => {
         e.preventDefault();
         const url = `${host}/api/createUser/`;
@@ -18,6 +19,7 @@ const Signup = () => {
         const json = await response.json();
         if (json.success) {
             alert('Account Created Successfully');
+            setlogstatus(true);
             localStorage.setItem('userid',json.user_id);
             localStorage.setItem('token',json.authToken);
             navigate('/home');

@@ -20,12 +20,12 @@ const TextEditor = (props) => {
     ['clean']
   ];
 
-
+  const {updateClient}=props;
   const [socket, setSocket] = useState()
   const [quill, setQuill] = useState()
   const {id:documentId}=useParams()
   const userid=localStorage.getItem('userid')
-  const {handleClient}=props;
+
 
   useEffect(() => {
     const s = io("http://localhost:3001")
@@ -38,7 +38,7 @@ const TextEditor = (props) => {
   useEffect(()=>{
     if(socket==null || quill==null) return;
     socket.on('updateUser',(client)=>{
-      handleClient(client);
+      updateClient(client);
     })
   },[socket])
 
@@ -109,6 +109,7 @@ const TextEditor = (props) => {
   return (
     <>
       <div className='contain' ref={wrapperRef}></div>
+      
     </>
   )
 }

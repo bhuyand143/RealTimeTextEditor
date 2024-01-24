@@ -1,5 +1,6 @@
 const express = require('express');
 const User = require('../models/User')
+const Document=require('../models/Documents')
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
@@ -104,6 +105,26 @@ router.get('/fetchfiles', async (req, res) => {
     }
 })
 
+router.get('/fetchfile/:docid', async (req, res) => {
+    try {
+        const token = req.header('auth-token');
+        if (!token) {
+            res.status(401).json({ error: "Please Authenticate using a valid token" })
+        }
+        const data = jwt.verify(token, JWT_SECRET);
+        const {docid}=req.params;
+        const doc=await Document.findOne({ doc_id: docid })
+        // const user = await User.findById(data.user.Id).populate('files');
+        if(doc)
+        res.json({success:true});
+        else
+        res.json({success:false});
+    }
+    catch (error) {
+        console.error(error.message);
+        res.status(500).send("Internal Server Error!")
+    }
+})
 // Route 3: Get loggedin User Details using: Post "/api/auth/getuser". Login required! 
 // router.post('/getuser', fetchuser, async (req, res) => {
 //     const errors = validationResult(req);

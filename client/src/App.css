@@ -83,3 +83,38 @@ body {
     background-clip: text;
     -webkit-text-fill-color: transparent;
 }
+
+/* .side-bar-border-col {
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, .7);
+    max-height: 150px;
+    overflow-y: scroll;
+
+} */
+.side-bar-border-col {
+    /* width: 250px; */
+    /* height: 100vh; */
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    overflow-y: scroll;
+    min-height: 11in;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, .5);
+  }
+  
+  .side-bar-border-col p {
+    line-height: 1.6;
+  }
+  
+  .side-bar-border-col::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .side-bar-border-col::-webkit-scrollbar-thumb {
+    background-color: #666;
+  }
+  
+  .side-bar-border-col::-webkit-scrollbar-track {
+    background-color: #333;
+  }
+  
