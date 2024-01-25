@@ -17,7 +17,7 @@ mongoose.connect(mongourl)
 
 const io = require("socket.io")(3001, {
   cors: {
-    origin: process.env.CORS_URL,
+    origin: "https://collab-text.vercel.app/",
     methods: ["GET", "POST"],
   },
 })
