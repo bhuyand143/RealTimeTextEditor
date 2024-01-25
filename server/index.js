@@ -2,16 +2,12 @@ const mongoose = require('mongoose')
 const Document = require('./models/Documents')
 
 mongoose.set('strictQuery', true);
-const express = require('express');
-const cors = require('cors');
+
 const User = require('./models/User');
 
 require('dotenv').config()
 
-const app = express();
-app.use(cors())
-app.use(express.json());
-app.use('/api/', require('./routes/api'))
+
 
 const mongourl=process.env.MONGO_CONN_URL
 
@@ -94,6 +90,3 @@ io.on("connection", (socket) => {
 });
 
 
-app.listen(5000, () => {
-  console.log('CollabText App Listening at port 5000!');
-})

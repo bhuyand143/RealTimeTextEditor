@@ -1,17 +1,29 @@
 const express = require('express');
-const User = require('../models/User')
-const Document = require('../models/Documents')
-const router = express.Router();
+const User = require('./models/User')
+const Document = require('./models/Documents')
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const cors = require('cors');
+const mongoose=require('mongoose');
+
+require('dotenv').config()
 
 const JWT_SECRET = process.env.JWT_SIGN;
 
+const app = express();
+app.use(cors())
+app.use(express.json());
+
+const mongourl=process.env.MONGO_CONN_URL
+
+mongoose.connect(mongourl)
+  .then(console.log('Connected to Mongo Succesfully!'))
+  .catch(error => console.log(error));
 
 //Route1: Creating User using /api/auth/createUser post Method
 
-router.post('/createUser',
+app.post('/api/createUser/',
     [
         body('name', 'Enter a valid name').isLength({ min: 3 }),
         body('email', 'Enter a valid email').isEmail(),
@@ -53,7 +65,7 @@ router.post('/createUser',
 
 //Route 2: Authenticating User using /api/login post Method
 
-router.post('/login', [
+app.post('/api/login', [
     body('email', 'Enter a valid email').isEmail(),
     body('password', 'Password can not be blank!').exists(),
 ], async (req, res) => {
@@ -88,7 +100,7 @@ router.post('/login', [
 })
 
 
-router.get('/fetchfiles', async (req, res) => {
+app.get('/api/fetchfiles', async (req, res) => {
     try {
         const token = req.header('auth-token');//name of the header it can be any name which should be name as header
         if (!token) {
@@ -104,7 +116,7 @@ router.get('/fetchfiles', async (req, res) => {
     }
 })
 
-router.get('/fetchfile/:docid', async (req, res) => {
+app.get('/api/fetchfile/:docid', async (req, res) => {
     try {
         const token = req.header('auth-token');
         if (!token) {
@@ -126,7 +138,7 @@ router.get('/fetchfile/:docid', async (req, res) => {
 })
 
 
-router.delete('/deletefile/:docid', async (req, res) => {
+app.delete('/deletefile/:docid', async (req, res) => {
     try {
         const token = req.header('auth-token');
         if (!token) {
@@ -155,4 +167,6 @@ router.delete('/deletefile/:docid', async (req, res) => {
     }
 })
 
-module.exports = router
+app.listen(5000, () => {
+    console.log('CollabText App Listening at port 5000!');
+})
