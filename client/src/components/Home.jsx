@@ -7,7 +7,7 @@ const Home = (props) => {
     const [searchText, setSearchText] = useState('');
     const [fileHistory, setFileHistory] = useState([]);
     const [copied, setCopied] = useState('')
-    // const {setlogstatus}=props;
+    const {isLoggedin}=props;
     const host = import.meta.env.VITE_APP_SERVER;
 
     const handleCopy = (copyUrl) => {
@@ -45,7 +45,23 @@ const Home = (props) => {
         navigate(`/documents/${uuidV4()}`)
     }
 
-
+    const handleDelete = async (fileURL) => {
+            const url = `${host}/api/deletefile/${fileURL}`
+            const response = await fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'auth-token': localStorage.getItem('token')
+                },
+            });
+            const json = await response.json()
+            if(json.success)
+            {
+                getfiles();
+            }
+            alert(json.message);
+        }
+    
 
     const getfiles = async () => {
         const url = `${host}/api/fetchfiles`
@@ -65,7 +81,7 @@ const Home = (props) => {
     }
 
     useEffect(() => {
-        if (localStorage.getItem('token')) {
+        if (isLoggedin) {
             getfiles();
         }
         else {
@@ -94,8 +110,9 @@ const Home = (props) => {
                                     <p className='flex-1 font-satoshi text-primary font-weight-medium text-sm text-truncate'>
                                         {item.doc_id}
                                     </p>
-                                    <div className="copy_btn flex-end" onClick={() => { handleCopy(item.doc_id) }}>
-                                        <span className='w-40 h-40 object-fit-contain'>{copied === item.doc_id ? <i className="fa fa-check" aria-hidden="true"></i> : <i className="fa-solid fa-copy"></i>}</span>
+                                    <div className=" flex-end" >
+                                        <span className=' ' onClick={() => { handleCopy(item.doc_id) }}>{copied === item.doc_id ? <i className="fa fa-check" aria-hidden="true"></i> : <i className="fa-solid fa-copy"></i>}</span>
+                                        <span className=' ' onClick={() => { handleDelete(item.doc_id) }}><i class="fa fa-trash" aria-hidden="true"></i></span>
                                     </div>
                                 </div>
                             )

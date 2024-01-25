@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-
+import logo from '../assets/logo.png'
 
 const Navbar = (props) => {
     let location = useLocation();
@@ -16,7 +16,7 @@ const Navbar = (props) => {
         <div>
             <nav className="navbar navbar-expand-lg bg-dark navbar-dark">
                 <div className="container-fluid">
-                    <Link className="navbar-brand" to='/'>CollabText</Link>
+                    <Link className="navbar-brand" to='/'><span><img src={logo} className='img-fluid' alt="" /></span> CollabText</Link>
                     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon"></span>
                     </button>

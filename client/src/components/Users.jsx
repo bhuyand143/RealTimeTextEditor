@@ -6,7 +6,7 @@ const Users = (props) => {
 
   return (
     <div className='container'>
-        <h2 className='gradient-text mb-4'>Connected Users</h2>
+        <h2 className='gradient-text-connected mb-4'>Connected Users</h2>
         {clients && clients.map((item)=>(
             <div key={item.socketId} className='mt-2'>
                 <Avatar name={`${item.username}`} size={50} round="14px" />

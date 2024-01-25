@@ -1,6 +1,6 @@
 const express = require('express');
 const User = require('../models/User')
-const Document=require('../models/Documents')
+const Document = require('../models/Documents')
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
@@ -97,7 +97,7 @@ router.get('/fetchfiles', async (req, res) => {
         }
         const data = jwt.verify(token, JWT_SECRET);
         const user = await User.findById(data.user.Id).populate('files');
-        res.json({files:user.files});
+        res.json({ files: user.files });
     }
     catch (error) {
         console.error(error.message);
@@ -112,32 +112,48 @@ router.get('/fetchfile/:docid', async (req, res) => {
             res.status(401).json({ error: "Please Authenticate using a valid token" })
         }
         const data = jwt.verify(token, JWT_SECRET);
-        const {docid}=req.params;
-        const doc=await Document.findOne({ doc_id: docid })
-        // const user = await User.findById(data.user.Id).populate('files');
-        if(doc)
-        res.json({success:true});
+        const { docid } = req.params;
+        const doc = await Document.findOne({ doc_id: docid })
+
+        if (doc)
+            res.json({ success: true });
         else
-        res.json({success:false});
+            res.json({ success: false });
     }
     catch (error) {
         console.error(error.message);
         res.status(500).send("Internal Server Error!")
     }
 })
-// Route 3: Get loggedin User Details using: Post "/api/auth/getuser". Login required! 
-// router.post('/getuser', fetchuser, async (req, res) => {
-//     const errors = validationResult(req);
-//     if (!errors.isEmpty()) {
-//         return res.status(400).json({ errors: errors.array() });
-//     }
-//     try {
-//         let userId = req.user.Id;
-//         const user = await User.findById(userId).select("-password"); //Selecting every element except the password
-//         res.send(user);
-//     } catch (error) {
-//         console.error(error.message);
-//         res.status(500).send("Internal Server Error!")
-//     }
-// })
+
+
+router.delete('/deletefile/:docid', async (req, res) => {
+    try {
+        const token = req.header('auth-token');
+        if (!token) {
+            res.status(401).json({ error: "Please Authenticate using a valid token" })
+        }
+        const data = jwt.verify(token, JWT_SECRET);
+        const { docid } = req.params;
+        const doc = await Document.findOne({ doc_id: docid });
+        if (doc) {
+            if (doc.owner.equals(data.user.Id)) {
+                const deleted = await Document.deleteOne({ doc_id: docid });
+                res.json({ success: true, message: "File deleted!" });
+            }
+            else {
+                res.json({ success: false, message: "You are not the owner of the file" });
+            }
+        }
+        else {
+            res.json({ success: false, message: "File not Found!" });
+        }
+
+    }
+    catch (error) {
+        console.error(error.message);
+        res.status(500).send("Internal Server Error!")
+    }
+})
+
 module.exports = router

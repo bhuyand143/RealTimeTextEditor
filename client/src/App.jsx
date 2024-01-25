@@ -32,7 +32,7 @@ function App() {
         <Navbar setlogstatus={setlogstatus} isLoggedin={isLoggedin} />
         <Routes>
           <Route exact path="/" element={<LandPage />} />
-          <Route exact path="/home" element={isLoggedin ? <Home setlogstatus={setlogstatus} /> : <Navigate to="/login" />} />
+          <Route exact path="/home" element={isLoggedin ? <Home setlogstatus={setlogstatus} isLoggedin={isLoggedin}/> : <Navigate to="/login" />} />
           <Route exact path='/documents/:id' element={isLoggedin ? <UserEditor setlogstatus={setlogstatus} /> : <Navigate to="/login" />} />
           <Route exact path="/signup" element={isLoggedin ? <Navigate to="/home" /> : <Signup setlogstatus={setlogstatus} />} />
           <Route exact path="/login" element={isLoggedin ? <Navigate to="/home" /> : <Login setlogstatus={setlogstatus} />} />

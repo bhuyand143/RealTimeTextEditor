@@ -39,7 +39,7 @@ async function findOrCreateDocument(id, user) {
     await user.save();
     return document;
   }
-  const doc = await Document.create({ doc_id: id, data: "" })
+  const doc = await Document.create({ doc_id: id, data: "",owner:user });
   user.files.push(doc);
   await doc.save();
   await user.save();
