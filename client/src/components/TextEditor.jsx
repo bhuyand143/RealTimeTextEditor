@@ -28,7 +28,8 @@ const TextEditor = (props) => {
 
 
   useEffect(() => {
-    const s = io("http://localhost:3001")
+    // "http://localhost:3001"
+    const s = io(import.meta.env.VITE_APP_SOCKET_URL)
     setSocket(s);
     return () => {
       s.disconnect()
