@@ -6,7 +6,6 @@ const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-let fetchuser = require('../middleware/fetchuser')
 const JWT_SECRET = process.env.JWT_SIGN;
 
 

@@ -4,7 +4,6 @@ const Document = require('./models/Documents')
 mongoose.set('strictQuery', true);
 const express = require('express');
 const cors = require('cors');
-const fetchuser = require('./middleware/fetchuser');
 const User = require('./models/User');
 
 require('dotenv').config()
@@ -14,13 +13,15 @@ app.use(cors())
 app.use(express.json());
 app.use('/api/', require('./routes/api'))
 
-mongoose.connect("mongodb://127.0.0.1:27017/realTimeEditor")
+const mongourl=process.env.MONGO_CONN_URL
+
+mongoose.connect(mongourl)
   .then(console.log('Connected to Mongo Succesfully!'))
   .catch(error => console.log(error));
 
 const io = require("socket.io")(3001, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: process.env.CORS_URL,
     methods: ["GET", "POST"],
   },
 })
