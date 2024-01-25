@@ -2,10 +2,8 @@ import React, { useEffect } from 'react'
 import Avatar from 'react-avatar';
 
 const Users = (props) => {
-  const {clients}=props
-  useEffect(()=>{
-      
-  },[clients])
+  const {clients}=props;
+
   return (
     <div className='container'>
         <h2 className='gradient-text mb-4'>Connected Users</h2>

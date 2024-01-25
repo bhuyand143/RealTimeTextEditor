@@ -7,7 +7,7 @@ const Home = (props) => {
     const [searchText, setSearchText] = useState('');
     const [fileHistory, setFileHistory] = useState([]);
     const [copied, setCopied] = useState('')
-    const {setlogstatus}=props;
+    // const {setlogstatus}=props;
     const host = import.meta.env.VITE_APP_SERVER;
 
     const handleCopy = (copyUrl) => {
@@ -19,7 +19,7 @@ const Home = (props) => {
     const handleSearch = (e) => {
         setSearchText(e.target.value);
     }
-    const handleClick = async () => {
+    const handleClick = async (e) => {
         if (searchText === '') {
             alert('please enter a id or click below to create a new one!');
         }
@@ -33,12 +33,10 @@ const Home = (props) => {
                 },
             });
             const json = await response.json()
-            if(json.success)
-            {
+            if (json.success) {
                 navigate(`/documents/${searchText}`)
             }
-            else
-            {
+            else {
                 alert('Please enter a valid document id');
             }
         }
@@ -60,7 +58,7 @@ const Home = (props) => {
         });
         const json = await response.json()
         if (json.files) {
-            const t=json.files;
+            const t = json.files;
             t.reverse();
             setFileHistory(t);
         }
@@ -92,16 +90,14 @@ const Home = (props) => {
                     <div className="row">
                         {fileHistory && fileHistory.map((item) => {
                             return (
-                                <>
-                                    <div key={item._id} onClick={() => { setSearchText(item.doc_id) }} className='link_card col-3 mt-2 mx-5'>
-                                        <p className='flex-1 font-satoshi text-primary font-weight-medium text-sm text-truncate'>
-                                            {item.doc_id}
-                                        </p>
-                                        <div className="copy_btn flex-end" onClick={() => { handleCopy(item.doc_id) }}>
-                                            <span className='w-40 h-40 object-fit-contain'>{copied === item.doc_id ? <i className="fa fa-check" aria-hidden="true"></i> : <i className="fa-solid fa-copy"></i>}</span>
-                                        </div>
+                                <div key={item._id} onClick={() => { setSearchText(item.doc_id) }} className='link_card col-3 mt-2 mx-5'>
+                                    <p className='flex-1 font-satoshi text-primary font-weight-medium text-sm text-truncate'>
+                                        {item.doc_id}
+                                    </p>
+                                    <div className="copy_btn flex-end" onClick={() => { handleCopy(item.doc_id) }}>
+                                        <span className='w-40 h-40 object-fit-contain'>{copied === item.doc_id ? <i className="fa fa-check" aria-hidden="true"></i> : <i className="fa-solid fa-copy"></i>}</span>
                                     </div>
-                                </>
+                                </div>
                             )
                         })}
                     </div>

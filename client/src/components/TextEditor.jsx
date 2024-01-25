@@ -3,7 +3,7 @@ import Quill from 'quill'
 import "quill/dist/quill.snow.css"
 import { io } from 'socket.io-client'
 import { useParams } from 'react-router'
-import Users from './Users'
+
 
 
 const TextEditor = (props) => {
@@ -20,11 +20,11 @@ const TextEditor = (props) => {
     ['clean']
   ];
 
-  const {updateClient}=props;
+  const { updateClient } = props;
   const [socket, setSocket] = useState()
   const [quill, setQuill] = useState()
-  const {id:documentId}=useParams()
-  const userid=localStorage.getItem('userid')
+  const { id: documentId } = useParams()
+  const userid = localStorage.getItem('userid')
 
 
   useEffect(() => {
@@ -34,59 +34,59 @@ const TextEditor = (props) => {
       s.disconnect()
     }
   }, [])
-  
-  useEffect(()=>{
-    if(socket==null || quill==null) return;
-    socket.on('updateUser',(client)=>{
+
+  useEffect(() => {
+    if (socket == null || quill == null) return;
+    socket.on('updateUser', (client) => {
       updateClient(client);
     })
-  },[socket])
+  }, [socket])
 
-  useEffect(()=>{
-    if(socket==null || quill==null) return;
+  useEffect(() => {
+    if (socket == null || quill == null) return;
 
-    socket.once('load-document',(document)=>{
+    socket.once('load-document', (document) => {
       quill.enable()
       quill.setContents(document)
     })
-    socket.emit('get-document',documentId,userid)
-  },[socket,quill,documentId])
+    socket.emit('get-document', documentId, userid)
+  }, [socket, quill, documentId])
 
   useEffect(() => {
-    if(socket==null || quill==null) return;
+    if (socket == null || quill == null) return;
     const handler = (delta) => {
       quill.updateContents(delta)
     }
     socket.on('receive-changes', handler);
 
-    return ()=>{
-      socket.off('receive-changes',handler)
+    return () => {
+      socket.off('receive-changes', handler)
     }
-  },[socket,quill])
-
-  useEffect(()=>{
-    if(socket==null || quill==null) return;
-    const interval=setInterval(() => {
-       socket.emit('save-document',quill.getContents())
-    },2000);
-
-    return ()=>{
-      clearInterval(interval);
-    }
-  },[socket,quill])
+  }, [socket, quill])
 
   useEffect(() => {
-    if(socket==null || quill==null) return;
+    if (socket == null || quill == null) return;
+    const interval = setInterval(() => {
+      socket.emit('save-document', quill.getContents())
+    }, 2000);
+
+    return () => {
+      clearInterval(interval);
+    }
+  }, [socket, quill])
+
+  useEffect(() => {
+    if (socket == null || quill == null) return;
     const handler = (delta, oldDelta, source) => {
       if (source !== 'user') return
       socket.emit("send-changes", delta)
     }
     quill.on('text-change', handler);
 
-    return ()=>{
-      quill.off('text-change',handler)
+    return () => {
+      quill.off('text-change', handler)
     }
-  },[socket,quill])
+  }, [socket, quill])
 
   const wrapperRef = useCallback((wrapper) => {
     if (wrapper == null) return;
@@ -109,7 +109,7 @@ const TextEditor = (props) => {
   return (
     <>
       <div className='contain' ref={wrapperRef}></div>
-      
+
     </>
   )
 }

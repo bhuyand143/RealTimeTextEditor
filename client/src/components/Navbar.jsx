@@ -35,7 +35,7 @@ const Navbar = (props) => {
                             </form>
                             :
                             <form className="d-flex">
-                                <button onClick={handleLogout} className="btn btn-primary">Logout <i className="fa fa-sign-out"></i></button>
+                                <button onClick={handleLogout} className="btn btn-danger">Logout <i className="fa fa-sign-out"></i></button>
                             </form>}
                     </div>
                 </div>

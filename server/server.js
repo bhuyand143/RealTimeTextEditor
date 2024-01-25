@@ -25,48 +25,6 @@ const io = require("socket.io")(3001, {
   },
 })
 
-const userSocketMap = {};
-let clients=[];
-
-function getAllConnectedClients(documentId) {
-  // Map
-  return Array.from(io.sockets.adapter.rooms.get(documentId) || []).map(
-    (socketId) => {
-      return {
-        socketId,
-        username: userSocketMap[socketId],
-      };
-    }
-  );
-}
-
-let docid="";
-
-io.on("connection", socket => {
-  socket.on('get-document', async (documentId, userId) => {
-    docid=documentId;
-    const user = await User.findById(userId);
-    userSocketMap[socket.id] = user.name;
-    const docs = await findOrCreateDocument(documentId, user);
-    socket.join(documentId);
-    clients=getAllConnectedClients(documentId);
-    socket.emit('updateUser',clients);
-    socket.emit('load-document', docs.data)
-    socket.on("send-changes", (delta) => {
-      socket.broadcast.to(documentId).emit("receive-changes", delta)
-    })
-    socket.on("save-document", async (data) => {
-      await Document.findOneAndUpdate({ doc_id: documentId }, { data });
-    })
-  })
-  socket.on('disconnect', () => {
-    delete userSocketMap[socket.id];
-    clients=getAllConnectedClients(docid);
-    socket.emit('updateUser',clients);
-  });
-})
-
-//have to handle if the user sends any invalid connection string
 
 async function findOrCreateDocument(id, user) {
   if (id == null) return;
@@ -87,6 +45,52 @@ async function findOrCreateDocument(id, user) {
   await user.save();
   return doc;
 }
+
+const userSocketMap = {};
+let clients = [];
+let docid = "";
+
+function getAllConnectedClients(documentId) {
+  const connectedSockets = Array.from(io.sockets.adapter.rooms.get(documentId) || []);
+  const validSockets = connectedSockets.filter(socketId => userSocketMap[socketId]);
+
+  return validSockets.map((socketId) => {
+    return {
+      socketId,
+      username: userSocketMap[socketId],
+    };
+  });
+}
+
+io.on("connection", (socket) => {
+  socket.on('get-document', async (documentId, userId) => {
+    docid = documentId;
+    const user = await User.findById(userId);
+    userSocketMap[socket.id] = user.name;
+    const docs = await findOrCreateDocument(documentId, user);
+    socket.join(documentId);
+    clients = getAllConnectedClients(documentId);
+
+    // Broadcast the updated user list to all connected users
+    io.to(documentId).emit('updateUser', clients);
+
+    socket.emit('load-document', docs.data);
+
+    socket.on("send-changes", (delta) => {
+      socket.broadcast.to(documentId).emit("receive-changes", delta);
+    });
+
+    socket.on("save-document", async (data) => {
+      await Document.findOneAndUpdate({ doc_id: documentId }, { data });
+    });
+  });
+
+  socket.on('disconnect', () => {
+    delete userSocketMap[socket.id];
+    clients = getAllConnectedClients(docid);
+    io.to(docid).emit('updateUser', clients);
+  });
+});
 
 
 app.listen(5000, () => {

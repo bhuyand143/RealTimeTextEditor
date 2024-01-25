@@ -1,4 +1,3 @@
-import TextEditor from "./components/TextEditor"
 import "./App.css"
 
 import {
@@ -19,26 +18,26 @@ import UserEditor from "./components/UserEditor";
 
 
 function App() {
-  
+
   const [isLoggedin, setIsLoggedin] = useState(localStorage.getItem('token'));
-  
-  
-  const setlogstatus=(islogged)=>{
+
+
+  const setlogstatus = (islogged) => {
     setIsLoggedin(islogged);
   }
 
   return (
     <>
       <Router>
-        <Navbar setlogstatus={setlogstatus} isLoggedin={isLoggedin}/>
+        <Navbar setlogstatus={setlogstatus} isLoggedin={isLoggedin} />
         <Routes>
-          <Route exact path="/" element={<LandPage/>}/>
-          <Route exact path="/home" element={isLoggedin?<Home setlogstatus={setlogstatus}/>:<Navigate to="/login"/>}/>
-          <Route exact path='/documents/:id' element={isLoggedin?<UserEditor setlogstatus={setlogstatus}/>:<Navigate to="/login"/>}/>
-          <Route exact path="/signup" element={isLoggedin?<Navigate to="/login"/>:<Signup setlogstatus={setlogstatus}/>}/>
-          <Route exact path="/login" element={isLoggedin?<Navigate to="/login"/>:<Login setlogstatus={setlogstatus}/>}/>
+          <Route exact path="/" element={<LandPage />} />
+          <Route exact path="/home" element={isLoggedin ? <Home setlogstatus={setlogstatus} /> : <Navigate to="/login" />} />
+          <Route exact path='/documents/:id' element={isLoggedin ? <UserEditor setlogstatus={setlogstatus} /> : <Navigate to="/login" />} />
+          <Route exact path="/signup" element={isLoggedin ? <Navigate to="/home" /> : <Signup setlogstatus={setlogstatus} />} />
+          <Route exact path="/login" element={isLoggedin ? <Navigate to="/home" /> : <Login setlogstatus={setlogstatus} />} />
         </Routes>
-       
+
       </Router>
     </>
   )
