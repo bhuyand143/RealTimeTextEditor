@@ -138,7 +138,7 @@ app.get('/api/fetchfile/:docid', async (req, res) => {
 })
 
 
-app.delete('/deletefile/:docid', async (req, res) => {
+app.delete('/api/deletefile/:docid', async (req, res) => {
     try {
         const token = req.header('auth-token');
         if (!token) {
